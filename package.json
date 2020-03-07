@@ -99,7 +99,7 @@
     "last 2 versions",
     "not ie <= 8"
   ],
-  "main": "main.js",
+  "main": "./src/main.js",
   "license": "MIT",
   "lint-staged": {
     "*.js": [
