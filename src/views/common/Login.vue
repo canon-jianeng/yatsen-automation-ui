@@ -24,9 +24,6 @@
         <el-form :model="ruleForm2" :rules="rules2" ref="ruleForm2" label-position="left" label-width="0px" class="demo-ruleForm login-container">
             <h3 class="title">系统登录</h3>
             <el-tabs v-model="activeName" @tab-click="handleClick" :stretch="true">
-                <el-tab-pane label="钉钉登录" name="first">
-                    <div id="login_container"></div>
-                </el-tab-pane>
                 <el-tab-pane label="账号登录" name="second">
                     <el-form-item prop="account">
                         <el-input type="text" v-model.trim="ruleForm2.account" auto-complete="off" placeholder="账号"></el-input>
@@ -40,6 +37,9 @@
                         <!--<el-button @click.native.prevent="handleReset2">重置</el-button>-->
                     </el-form-item>
                 </el-tab-pane>
+                <el-tab-pane label="二维码登录" name="first">
+                    <div id="login_container"></div>
+                </el-tab-pane>
             </el-tabs>
         </el-form>
     </div>
@@ -52,7 +52,7 @@
     export default {
         data() {
             return {
-                activeName: 'first',
+                activeName: 'second',
                 logining: false,
                 ruleForm2: {
                     account: '',
@@ -70,7 +70,10 @@
             }
         },
         methods: {
-            handleClick() {},
+            handleClick() {
+                if (!this.methods) return
+                this.methods.login_ding()
+            },
             handleReset2() {
                 this.$refs.ruleForm2.resetFields()
             },

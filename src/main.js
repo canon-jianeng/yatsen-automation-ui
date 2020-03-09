@@ -8,12 +8,22 @@ import Vuex from 'vuex'
 import routes from './routes'
 import 'font-awesome/css/font-awesome.min.css'
 import "babel-polyfill"
+import AMap from 'vue-amap';
 
 Vue.config.productionTip = false;
 
 Vue.use(ELEMENT);
 Vue.use(VueRouter);
 Vue.use(Vuex);
+Vue.use(AMap);
+
+// 初始化高德地图的 key 和插件
+AMap.initAMapApiLoader({
+  key: 'YOUR_KEY',
+  plugin: ['Autocomplete', 'PlaceSearch', 'Scale', 'OverView', 'ToolBar', 'MapType', 'PolyEditor', 'AMap.CircleEditor'],
+  // 默认高德 sdk 版本为 1.4.4
+  v: '1.4.4'
+});
 
 // NProgress.configure({ showSpinner: false });
 
