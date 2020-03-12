@@ -3,6 +3,7 @@
 ## Project setup
 ```
 yarn install
+
 ```
 
 ### Compiles and hot-reloads for development
@@ -19,6 +20,12 @@ yarn build
 ```
 yarn lint
 ```
+
+### Ingore error
+```
+yarn config set ignore-engines true
+```
+
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
