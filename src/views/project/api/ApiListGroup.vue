@@ -77,283 +77,316 @@
 </template>
 
 <script>
-    import { test } from '../../../api/api'
-    import $ from 'jquery'
-    export default {
-        data() {
-            return {
-                filters: {
-                    name: ''
-                },
-                api: [],
-                total: 0,
-                page: 1,
-                listLoading: false,
-                sels: [],//列表选中列
-                updateGroupFormVisible: false,
-                updateGroupForm: {
-                    firstGroup: "",
-                },
-                updateGroupFormRules: {
-                    firstGroup : [{ type: 'number', required: true, message: '请选择分组', trigger: 'blur'}],
-                },
-                group: [],
-                updateGroupLoading: false,
-                update: true,
-            }
+  import { test } from '../../../api/api'
+  import $ from 'jquery'
+  export default {
+    data() {
+      return {
+        filters: {
+          name: ''
         },
-        methods: {
-            // 修改mock状态
-            checkMockStatus(row){
+        api: [],
+        total: 0,
+        page: 1,
+        listLoading: false,
+        // 列表选中列
+        sels: [],
+        updateGroupFormVisible: false,
+        updateGroupForm: {
+          firstGroup: "",
+        },
+        updateGroupFormRules: {
+          firstGroup : [{
+            type: 'number',
+            required: true,
+            message: '请选择分组',
+            trigger: 'blur'
+          }],
+        },
+        group: [],
+        updateGroupLoading: false,
+        update: true,
+      }
+    },
+    methods: {
+      // 修改mock状态
+      checkMockStatus(row){
 				let self = this;
 				let param = JSON.stringify({
 					project_id:Number(this.$route.params.project_id),
 					id:Number(row.id)
 				});
 				$.ajax({
-                    type: "post",
-                    url: test+"/api/api/updateMock",
-                    async: true,
-                    data: param,
-                    headers: {
-                        Authorization: 'Token '+JSON.parse(sessionStorage.getItem('token'))
-                    },
-                    timeout: 5000,
-                    success: function(data) {
-                        self.listLoading = false;
-                        if (data.code === '999999') {
-                            self.$message.success({
-                                message: data.msg,
-                                center: true,
-                            });
-                            self.getApiList();
-                        }
-                        else {
-                            self.$message.error({
-                                message: data.msg,
-                                center: true,
-                            })
-                        }
-                    },
-                })
+          type: "post",
+          url: test+"/api/api/updateMock",
+          async: true,
+          data: param,
+          headers: {
+            Authorization: 'Token ' + JSON.parse(
+              sessionStorage.getItem('token')
+            )
+          },
+          timeout: 5000,
+          success: function(data) {
+            self.listLoading = false;
+            if (data.code === '999999') {
+              self.$message.success({
+                message: data.msg,
+                center: true,
+              });
+              self.getApiList();
+            }
+            else {
+              self.$message.error({
+                message: data.msg,
+                center: true,
+              })
+            }
+          },
+        })
 			},
-            // 获取项目列表
-            getApiList() {
-                this.listLoading = true;
-                let self = this;
-                let param = { project_id: this.$route.params.project_id, page: self.page};
-                if (this.$route.params.firstGroup) {
-                    param['apiGroupLevelFirst_id'] = this.$route.params.firstGroup;
-                }
+      // 获取项目列表
+      getApiList() {
+        this.listLoading = true;
+        let self = this;
+        let param = {
+          project_id: this.$route.params.project_id,
+          page: self.page
+        };
+        if (this.$route.params.firstGroup) {
+          param['apiGroupLevelFirst_id'] = this.$route.params.firstGroup;
+        }
 
-                $.ajax({
-                    type: "get",
-                    url: test+"/api/api/api_list",
-                    async: true,
-                    data: param,
-                    headers: {
-                        Authorization: 'Token '+JSON.parse(sessionStorage.getItem('token'))
-                    },
-                    timeout: 5000,
-                    success: function(data) {
-                        self.listLoading = false;
-                        if (data.code === '999999') {
-                            self.total = data.data.total;
-                            self.api = data.data.data
-                        }
-                        else {
-                            self.$message.error({
-                                message: data.msg,
-                                center: true,
-                            })
-                        }
-                    },
-                })
-            },
-            // 修改接口所属分组
-            updateGroupSubmit() {
-                let ids = this.sels.map(item => item.id);
-                let self = this;
-                this.$confirm('确认修改所属分组吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    self.updateGroupLoading = true;
-                    //NProgress.start();
-                    let params = JSON.stringify({
+        $.ajax({
+          type: "get",
+          url: test+"/api/api/api_list",
+          async: true,
+          data: param,
+          headers: {
+            Authorization: 'Token ' + JSON.parse(
+              sessionStorage.getItem('token')
+            )
+          },
+          timeout: 5000,
+          success: function(data) {
+            self.listLoading = false;
+            if (data.code === '999999') {
+              self.total = data.data.total;
+              self.api = data.data.data
+            }
+            else {
+              self.$message.error({
+                message: data.msg,
+                center: true,
+              })
+            }
+          },
+        })
+      },
+      // 修改接口所属分组
+      updateGroupSubmit() {
+        let ids = this.sels.map(item => item.id);
+        let self = this;
+        this.$confirm('确认修改所属分组吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          self.updateGroupLoading = true;
+          //NProgress.start();
+          let params = JSON.stringify({
 						project_id:Number(this.$route.params.project_id),
 						apiGroupLevelFirst_id: Number(self.updateGroupForm.firstGroup),
 						ids: ids,
-                    });
-                    $.ajax({
-                        type: "post",
-                        url: test+"/api/api/update_group",
-                        async: true,
-                        data: params,
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: 'Token '+JSON.parse(sessionStorage.getItem('token'))
-                        },
-                        timeout: 5000,
-                        success: function(data) {
-                            self.updateGroupLoading = false;
-                            if (data.code === '999999') {
-                                self.$message({
-                                    message: '修改成功',
-                                    center: true,
-                                    type: 'success'
-                                });
-                                self.$router.push({ name: '分组接口列表', params: { project_id: self.$route.params.project_id, firstGroup: self.updateGroupForm.firstGroup}});
-                            }
-                            else {
-                                self.$message.error({
-                                    message: data.msg,
-                                    center: true,
-                                })
-                            }
-                            self.updateGroupFormVisible = false;
-                            self.getApiList()
-                        },
-                    })
-                }).catch(() => {
-
-                });
+          });
+          $.ajax({
+            type: "post",
+            url: test+"/api/api/update_group",
+            async: true,
+            data: params,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: 'Token ' + JSON.parse(
+                sessionStorage.getItem('token')
+              )
             },
-            // 获取api分组
-            getApiGroup() {
-                let self = this;
-                $.ajax({
-                    type: "get",
-                    url: test+"/api/api/group",
-                    async: true,
-                    data: { project_id: this.$route.params.project_id},
-                    headers: {
-                        Authorization: 'Token '+JSON.parse(sessionStorage.getItem('token'))
-                    },
-                    timeout: 5000,
-                    success: function(data) {
-                        if (data.code === '999999') {
-                            self.group = data.data;
-                            self.updateGroupForm.firstGroup = self.group[0].id
-                        }
-                        else {
-                            self.$message.error({
-                                message: data.msg,
-                                center: true,
-                            })
-                        }
-                    },
+            timeout: 5000,
+            success: function(data) {
+              self.updateGroupLoading = false;
+              if (data.code === '999999') {
+                self.$message({
+                  message: '修改成功',
+                  center: true,
+                  type: 'success'
+                });
+                self.$router.push({
+                  name: '分组接口列表',
+                  params: {
+                    project_id: self.$route.params.project_id,
+                    firstGroup: self.updateGroupForm.firstGroup
+                  }
+                });
+              }
+              else {
+                self.$message.error({
+                  message: data.msg,
+                  center: true,
                 })
+              }
+              self.updateGroupFormVisible = false;
+              self.getApiList()
             },
-			// 修改分组弹窗
-            changeGroup() {
-                this.getApiGroup();
-                this.updateGroupFormVisible = true
+          })
+        }).catch(() => {
 
-            },
-            //删除
-            handleDel: function (index, row) {
-                this.$confirm('确认删除该记录吗?', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    this.listLoading = true;
-                    //NProgress.start();
-                    let self = this;
-                    $.ajax({
-                        type: "post",
-                        url: test+"/api/api/del_api",
-                        async: true,
-                        data: JSON.stringify({ project_id: Number(this.$route.params.project_id), ids: [row.id] }),
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: 'Token '+JSON.parse(sessionStorage.getItem('token'))
-                        },
-                        timeout: 5000,
-                        success: function(data) {
-                            if (data.code === '999999') {
-                                self.$message({
-                                    message: '删除成功',
-                                    center: true,
-                                    type: 'success'
-                                })
-                            } else {
-                                self.$message.error({
-                                    message: data.msg,
-                                    center: true,
-                                })
-                            }
-                            self.getApiList()
-                        },
-                    })
-
-                }).catch(() => {
-                });
-            },
-            handleCurrentChange(val) {
-                this.page = val;
-                this.getApiList()
-            },
-            selsChange: function (sels) {
-                if (sels.length>0) {
-                    this.sels = sels;
-                    this.update = false
-                } else {
-                    this.update = true
-                }
-            },
-            //批量删除
-            batchRemove: function () {
-                let ids = this.sels.map(item => item.id);
-                let self = this;
-                this.$confirm('确认删除选中记录吗？', '提示', {
-                    type: 'warning'
-                }).then(() => {
-                    self.listLoading = true;
-                    //NProgress.start();
-                    $.ajax({
-                        type: "post",
-                        url: test+"/api/api/del_api",
-                        async: true,
-                        data:JSON.stringify({ project_id: Number(this.$route.params.project_id), ids: ids}),
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: 'Token '+JSON.parse(sessionStorage.getItem('token'))
-                        },
-                        timeout: 5000,
-                        success: function(data) {
-                            self.listLoading = false;
-                            if (data.code === '999999') {
-                                self.$message({
-                                    message: '删除成功',
-                                    center: true,
-                                    type: 'success'
-                                })
-                            }
-                            else {
-                                self.$message.error({
-                                    message: data.msg,
-                                    center: true,
-                                })
-                            }
-                            self.getApiList()
-                        },
-                    })
-                }).catch(() => {
-
-                });
-            },
-        },
-        mounted() {
-            this.getApiList();
-
-        },
-        watch: {
-            '$route': function (to, from) {
-                if (to !== from) {
-                    this.getApiList();
-                }
+        });
+      },
+      // 获取api分组
+      getApiGroup() {
+        let self = this;
+        $.ajax({
+          type: "get",
+          url: test+"/api/api/group",
+          async: true,
+          data: {
+            project_id: this.$route.params.project_id
+          },
+          headers: {
+            Authorization: 'Token ' + JSON.parse(
+              sessionStorage.getItem('token')
+            )
+          },
+          timeout: 5000,
+          success: function(data) {
+            if (data.code === '999999') {
+              self.group = data.data;
+              self.updateGroupForm.firstGroup = self.group[0].id
             }
-        },
-    }
+            else {
+              self.$message.error({
+                message: data.msg,
+                center: true,
+              })
+            }
+          },
+        })
+      },
+			// 修改分组弹窗
+      changeGroup() {
+        this.getApiGroup();
+        this.updateGroupFormVisible = true
+      },
+      //删除
+      handleDel: function (index, row) {
+        this.$confirm('确认删除该记录吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          this.listLoading = true;
+          //NProgress.start();
+          let self = this;
+          $.ajax({
+            type: "post",
+            url: test+"/api/api/del_api",
+            async: true,
+            data: JSON.stringify({
+              project_id: Number(this.$route.params.project_id),
+              ids: [row.id]
+            }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: 'Token ' + JSON.parse(
+                sessionStorage.getItem('token')
+              )
+            },
+            timeout: 5000,
+            success: function(data) {
+              if (data.code === '999999') {
+                self.$message({
+                  message: '删除成功',
+                  center: true,
+                  type: 'success'
+                })
+              } else {
+                self.$message.error({
+                  message: data.msg,
+                  center: true,
+                })
+              }
+              self.getApiList()
+            },
+          })
+
+        }).catch(() => {
+        });
+      },
+      handleCurrentChange(val) {
+        this.page = val;
+        this.getApiList()
+      },
+      selsChange: function (sels) {
+        if (sels.length>0) {
+          this.sels = sels;
+          this.update = false
+        } else {
+          this.update = true
+        }
+      },
+      //批量删除
+      batchRemove: function () {
+        let ids = this.sels.map(item => item.id);
+        let self = this;
+        this.$confirm('确认删除选中记录吗？', '提示', {
+          type: 'warning'
+        }).then(() => {
+          self.listLoading = true;
+          //NProgress.start();
+          $.ajax({
+            type: "post",
+            url: test+"/api/api/del_api",
+            async: true,
+            data:JSON.stringify({
+              project_id: Number(this.$route.params.project_id),
+              ids: ids
+            }),
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: 'Token ' + JSON.parse(
+                sessionStorage.getItem('token')
+              )
+            },
+            timeout: 5000,
+            success: function(data) {
+              self.listLoading = false;
+              if (data.code === '999999') {
+                self.$message({
+                  message: '删除成功',
+                  center: true,
+                  type: 'success'
+                })
+              }
+              else {
+                self.$message.error({
+                  message: data.msg,
+                  center: true,
+                })
+              }
+              self.getApiList()
+            },
+          })
+        }).catch(() => {
+
+        });
+      },
+    },
+    mounted() {
+      this.getApiList();
+    },
+    watch: {
+      '$route': function (to, from) {
+        if (to !== from) {
+          this.getApiList();
+        }
+      }
+    },
+  }
 </script>
 
 <style lang="scss" scoped>

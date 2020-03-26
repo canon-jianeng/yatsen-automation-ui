@@ -20,7 +20,16 @@ Vue.use(AMap);
 // 初始化高德地图的 key 和插件
 AMap.initAMapApiLoader({
   key: 'YOUR_KEY',
-  plugin: ['Autocomplete', 'PlaceSearch', 'Scale', 'OverView', 'ToolBar', 'MapType', 'PolyEditor', 'AMap.CircleEditor'],
+  plugin: [
+    'Autocomplete',
+    'PlaceSearch',
+    'Scale',
+    'OverView',
+    'ToolBar',
+    'MapType',
+    'PolyEditor',
+    'AMap.CircleEditor'
+  ],
   // 默认高德 sdk 版本为 1.4.4
   v: '1.4.4'
 });

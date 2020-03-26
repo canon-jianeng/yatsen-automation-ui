@@ -58,50 +58,50 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                tabPosition: 'top',
-                project_id:'',
-                sysName:'自动化测试平台',
-                collapsed:false,
-                sysUserName: '',
-                sysUserAvatar: '',
-            }
-        },
-        methods: {
-            handleselect: function (a, b) {
-            },
-            onSubmit() {
-                console.log('submit!');
-            },
-            //退出登录
-            logout: function () {
-                let _this = this;
-                this.$confirm('确认退出吗?', '提示', {
-                    //type: 'warning'
-                }).then(() => {
-                    sessionStorage.removeItem('token');
-                    _this.$router.push('/login');
-                }).catch(() => {
-
-                });
-            },
-            showMenu(i,status){
-                this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
-            },
-        },
-        mounted() {
-            let user = sessionStorage.getItem('username');
-            if (user) {
-                name = JSON.parse(user);
-                this.sysUserName = name || '';
-//				this.sysUserAvatar = '../assets/user.png';
-            }
-            this.project_id = this.$route.params.project_id
-        }
+  export default {
+    data() {
+      return {
+        tabPosition: 'top',
+        project_id:'',
+        sysName:'自动化测试平台',
+        collapsed:false,
+        sysUserName: '',
+        sysUserAvatar: '',
+      }
+    },
+    methods: {
+      handleselect: function (a, b) {
+      },
+      onSubmit() {
+        console.log('submit!');
+      },
+      //退出登录
+      logout: function () {
+        let _this = this;
+        this.$confirm('确认退出吗?', '提示', {
+          //type: 'warning'
+        }).then(() => {
+          sessionStorage.removeItem('token');
+          _this.$router.push('/login');
+        }).catch(() => {
+        });
+      },
+      showMenu(i,status){
+        this.$refs.menuCollapsed.getElementsByClassName(
+          'submenu-hook-'+i
+        )[0].style.display = status?'block':'none';
+      },
+    },
+    mounted() {
+      let user = sessionStorage.getItem('username');
+      if (user) {
+        name = JSON.parse(user);
+        this.sysUserName = name || '';
+				// this.sysUserAvatar = '../assets/user.png';
+      }
+      this.project_id = this.$route.params.project_id
     }
-
+  }
 </script>
 
 <style scoped lang="scss">

@@ -55,62 +55,61 @@
 </template>
 
 <script>
-    export default {
-        data() {
-            return {
-                sysName:'自动化测试平台',
-                collapsed:false,
-                sysUserName: '',
-                // sysUserAvatar: '',
-                form: {
-                    name: '',
-                    region: '',
-                    date1: '',
-                    date2: '',
-                    delivery: false,
-                    type: [],
-                    resource: '',
-                    desc: ''
-                }
-            }
-        },
-        methods: {
-            onSubmit() {
-                console.log('submit!');
-            },
-            handleselect: function (a, b) {
-            },
-            //退出登录
-            logout: function () {
-                var _this = this;
-                this.$confirm('确认退出吗?', '提示', {
-                    //type: 'warning'
-                }).then(() => {
-                    sessionStorage.removeItem('token');
-                    _this.$router.push('/login');
-                }).catch(() => {
-
-                });
-            },
-            //折叠导航栏
-            collapse:function(){
-                this.collapsed=!this.collapsed;
-            },
-            showMenu(i,status){
-                this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
-            }
-        },
-        mounted() {
-            var user = sessionStorage.getItem('username');
-            if (user) {
-                name = JSON.parse(user);
-                this.sysUserName = name || '';
-//				this.sysUserAvatar = '../assets/user.png';
-            }
-
+  export default {
+    data() {
+      return {
+        sysName:'自动化测试平台',
+        collapsed:false,
+        sysUserName: '',
+        // sysUserAvatar: '',
+        form: {
+          name: '',
+          region: '',
+          date1: '',
+          date2: '',
+          delivery: false,
+          type: [],
+          resource: '',
+          desc: ''
         }
-    }
+      }
+    },
+    methods: {
+      onSubmit() {
+        console.log('submit!');
+      },
+      handleselect: function (a, b) {
+      },
+      //退出登录
+      logout: function () {
+        var _this = this;
+        this.$confirm('确认退出吗?', '提示', {
+          //type: 'warning'
+        }).then(() => {
+          sessionStorage.removeItem('token');
+          _this.$router.push('/login');
+        }).catch(() => {
 
+        });
+      },
+      //折叠导航栏
+      collapse:function(){
+        this.collapsed=!this.collapsed;
+      },
+      showMenu(i,status){
+        this.$refs.menuCollapsed.getElementsByClassName('submenu-hook-'+i)[0].style.display=status?'block':'none';
+      }
+    },
+    mounted() {
+      var user = sessionStorage.getItem('username');
+      if (user) {
+        name = JSON.parse(user);
+        this.sysUserName = name || '';
+				// this.sysUserAvatar = '../assets/user.png';
+      }
+
+    }
+  }
 </script>
 
 <style scoped lang="scss">
