@@ -1,4 +1,4 @@
-# yatsen_automation_ui
+# automation_ui
 
 ## Project setup
 ```
